@@ -50,6 +50,19 @@ app.post('/api/profile', function(req, res, next) {
   });
 });
 
+app.get('/api/killInstance', function(request, response) {
+	console.log("Killing instance #" + process.env.CF_INSTANCE_INDEX);
+	process.exit(-1);
+});
+
+app.get('/api/instanceIndex', function(request, response) {
+	var instance = process.env.CF_INSTANCE_INDEX;
+	console.log("Instance ID = " + instance);
+	response.write(JSON.stringify({"instanceIndex": instance}));
+	response.end();
+});
+
+
 // error-handler settings
 require('./config/error-handler')(app);
 

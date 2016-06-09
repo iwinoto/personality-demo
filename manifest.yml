@@ -1,10 +1,10 @@
 applications:
 - path: .
-  memory: 512M
+  memory: 256M
   instances: 1
   domain: au-syd.mybluemix.net
   name: iw-personality-demo
   host: iw-personality-demo
-  disk_quota: 1024M
+  disk_quota: 512M
   services:
   - iw-personality-demo-personality_insights
