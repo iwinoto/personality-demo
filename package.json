@@ -3,6 +3,7 @@
   "version": "0.1.10",
   "description": "A sample nodejs app for Bluemix that use the Personality Insights service",
   "dependencies": {
+    "bluemix-autoscaling-agent": "*",
     "body-parser": "^1.11.0",
     "cookie-parser": "^1.4.0",
     "csurf": "^1.8.3",
