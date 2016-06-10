@@ -10,5 +10,4 @@ Demo application build with node.js and Personality Insight using boilerplate
   * Manually create 2 instances
   * kill an instance
   * add auto scale service - test with
-    $ ab -n 100 -c 2 http://westpac-test.mybluemix.net
-
+    $ ab -n 100 -c 2 http://iw-personality-demo.au-syd.mybluemix.net
