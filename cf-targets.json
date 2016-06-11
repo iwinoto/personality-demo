@@ -1,0 +1,18 @@
+{
+  "us-bluemix-demo": {
+    "prefix": "iw",
+    "suffix": "demo",
+    "target": "api.ng.bluemix.net",
+    "space": "bluemix-demo",
+    "organisation": "iwinoto@au1.ibm.com",
+    "domain": "mybluemix.net"
+  },
+  "syd-bluemix-demo": {
+    "prefix": "iw",
+    "suffix": "demo",
+    "target": "api.au-syd.bluemix.net",
+    "space": "bluemix-demo",
+    "organisation": "iwinoto@au1.ibm.com",
+    "domain": "au-syd.mybluemix.net"
+  }
+}

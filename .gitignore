@@ -1,3 +1,5 @@
 node_modules/
 launchConfigurations/
 /npm-debug.log
+/target/
+/build/
