@@ -15,9 +15,8 @@ module.exports = function(grunt) {
     // Source header
     banner: '/*! <%= pkg.title || pkg.name %> - v<%= pkg.version %> - ' +
       '<%= grunt.template.today("yyyy-mm-dd") %>\n' +
-      '<%= pkg.homepage ? "* " + pkg.homepage + "\\n" : "" %>' +
-      '* Copyright (c) <%= grunt.template.today("yyyy") %> <%= pkg.author.name %>;' +
-      ' Licensed <%= _.pluck(pkg.licenses, "type").join(", ") %> */\n',
+      '* Copyright (c) <%= grunt.template.today("yyyy") %> <%= pkg.author.name %>;\n' +
+      '* Licensed <%= pkg.license %> */\n',
     // Task configuration.
     env : {
       options : {
@@ -42,15 +41,11 @@ module.exports = function(grunt) {
         stripBanners: true
       },
       dist: {
-        //src: ['lib/<%= pkg.name %>.js'],
-        //dest: 'dist/<%= pkg.name %>.js'
         files: [{
             expand: true,     // Enable dynamic expansion.
             cwd: '.',         // Src matches are relative to this path.
-            src: ['!**/node_modules/**/*.*','**/*.js'], // Actual pattern(s) to match.
-            dest: 'build/',    // Destination path prefix.
-            ext: '.js',       // Dest filepaths will have this extension.
-            extDot: 'first'   // Extensions in filenames begin after the first dot
+            src:['**/*.js', '!node_modules/**/*.*'],
+            dest: 'build/'    // Destination path prefix.
         },],
       }
     },
@@ -119,20 +114,20 @@ module.exports = function(grunt) {
       main: {
         files: [
           // copy build files
-          {src: ['*.js'], dest: '<%= dist %>/'},
-          {src: ['cf-services.json'], dest: '<%= dist %>/'},
-          {src: ['cf-targets.json'], dest: '<%= dist %>/'},
-          // includes files within path and its sub-directories
-          {src: ['package.json'], dest: '<%= dist %>/'},
-          {src: ['manifest.yml'], dest: '<%= dist %>//manifest.yml'},
-          {expand: true, src: ['*.cer'], dest: '<%= dist %>/'},
-          {src: ['.cfignore'], dest: '<%= dist %>/'},
-          {expand: true, src: ['test/**/*.*'], dest: '<%= dist %>/'},
-          // copy UI files
-          {expand: true, src: ['views/**/*.*'], dest: '<%= dist %>/'},
-          {expand: true, src: ['public/**/*.*'], dest: '<%= dist %>/'},
-          {expand: true, src: ['i18n/**/*.*'], dest: '<%= dist %>/'},
-          {expand: true, src: ['config/**/*.*'], dest: '<%= dist %>/'}
+          {
+            expand: true,
+            cwd: '.',
+            src: ['cf-services.json', 'cf-targets.json', 'package.json','manifest.yml',
+        	      '.cfignore', 'views/**/*.*', 'public/**/*.*', 'i18n/**/*.*', 'config/**/*.*',
+        	      '!**/*.js'],
+            dest: '<%= dist %>/'
+          }
+          //{
+          //  expand: true,
+          //  cwd: 'build',
+          //  src: ['**/*.js'],
+          //  dest: '<%= dist %>/'
+         // }
         ]
       },
       debug: {
