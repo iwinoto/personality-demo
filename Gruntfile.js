@@ -1,4 +1,5 @@
 /*global module:false*/
+var fs = require('fs');
 
 module.exports = function(grunt) {
   // Project configuration.
@@ -20,20 +21,20 @@ module.exports = function(grunt) {
       '* Copyright (c) <%= grunt.template.today("yyyy") %> <%= pkg.author.name %>;\n' +
       '* Licensed <%= pkg.license %> */\n',
     // Task configuration.
-    env : {
+    env: {
       options : {
       //Shared Options Hash
       },
-      unit_test : {
-        LOCATIONS_UNIT_TESTING : 'true',
-        TEST_ROUTE : '',
-        TEST_PORT : '3000'
+      unit_test: {
+        LOCATIONS_UNIT_TESTING: 'true',
+        TEST_ROUTE: '',
+        TEST_PORT: '3000'
       },
-      dev : {
-        LOCATIONS_UNIT_TESTING : 'false',
-        TEST_REMOTE : 'true',
-        TEST_ROUTE : '',
-        TEST_PORT : '80'
+      dev: {
+        LOCATIONS_UNIT_TESTING: 'false',
+        TEST_REMOTE: 'true',
+        TEST_ROUTE: '',
+        TEST_PORT: '80'
       }
     },
     
@@ -124,12 +125,6 @@ module.exports = function(grunt) {
         	      '!**/*.js'],
             dest: '<%= dist %>/'
           }
-          //{
-          //  expand: true,
-          //  cwd: 'build',
-          //  src: ['**/*.js'],
-          //  dest: '<%= dist %>/'
-         // }
         ]
       },
       debug: {
@@ -145,7 +140,7 @@ module.exports = function(grunt) {
       options: {
         reporter: 'junit',
         reporterOptions: {
-          output: '<%= dist %>/failsafe-reports'
+          output: 'test/failsafe-reports'
         }
       }
     },
@@ -174,10 +169,18 @@ module.exports = function(grunt) {
         command: function() {
           // Application hostname
           var hostname = grunt.config.get('hostname');
-          var dist_dir = grunt.config('dist');
-          var app_name = grunt.config('pkg.name');
+          var dist_dir = grunt.config.get('dist');
+          var app_name = grunt.config.get('pkg.name');
           var domain = grunt.config.get('domain');
-          var cmd = ['cf push ' + app_name + ' -n ' + hostname + ' -d ' + domain];
+          var cmd = [];
+          try {
+            fs.statSync(dist_dir);
+            cmd.push('cd ' + dist_dir);
+          } catch(e) {
+            // dist_dir does not exist, so don't try to cd to it.
+          }
+          cmd.push('cf push ' + app_name + ' -n ' + hostname + ' -d ' + domain);
+          
           grunt.log.writeln('Push to Bluemix with\n' +
               '\t app: ' + app_name + '\n' +
               '\t hostname: ' + hostname + '\n' +
@@ -188,9 +191,14 @@ module.exports = function(grunt) {
       create_services: {
         command: function() {
           var services = grunt.file.readJSON('cf-services.json');
-          //var dist_dir = grunt.config('dist');
-          //var cmd = ['cd ' + dist_dir + '/'];
+          var dist_dir = grunt.config.get('dist');
           var cmd = [];
+          try {
+      	    fs.statSync(dist_dir);
+      	    cmd.push('cd ' + dist_dir);
+      	  } catch(e) {
+            // dist_dir does not exist, so don't try to cd to it.
+      	  }
           Object.keys(services).forEach(function(key) {
             var service = services[key];
             cmd.push('cf create-service ' + service.type + ' ' + service.plan + ' ' + key);
@@ -206,14 +214,13 @@ module.exports = function(grunt) {
     }
   });
 
-  //Set hotname, domain and env.dev.TEST_ROUTE in grunt config
+  //Set hostname, domain and env.dev.TEST_ROUTE in grunt config
   var hostname;
   var route;
   var domain;
   var manifest = grunt.config.get('manifest');
   var pkg = grunt.config.get('pkg');
   var cf_env = grunt.config.get('cf_env');
-  grunt.log.writeln('Getting route for ' + hostname);
   manifest.applications.forEach(function(app){
     if(app.name === pkg.name){
       grunt.log.writeln('Found app ' + app.name + ' in manifest.');
