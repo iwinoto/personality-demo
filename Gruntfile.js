@@ -177,7 +177,16 @@ module.exports = function(grunt) {
           var dist_dir = grunt.config('dist');
           var app_name = grunt.config('pkg.name');
           var domain = grunt.config.get('domain');
-          var cmd = ['cf push ' + app_name + ' -n ' + hostname + ' -d ' + domain];
+          var cmd = [];
+          try {
+        	    fs.statSync(dist_dir);
+        	    cmd.push('cd ' + dist_dir);
+        	  } catch(e) {
+        		  // dist_dir does not exist, so don't try to cd to it.
+        	  }
+          };
+          cmd.push('cf push ' + app_name + ' -n ' + hostname + ' -d ' + domain);
+          
           grunt.log.writeln('Push to Bluemix with\n' +
               '\t app: ' + app_name + '\n' +
               '\t hostname: ' + hostname + '\n' +
