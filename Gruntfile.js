@@ -12,9 +12,6 @@ module.exports = function(grunt) {
     manifest: grunt.file.readYAML('manifest.yml'),
     // Cloud Foundry target
     cf_env: (grunt.file.readJSON('cf-targets.json'))[(grunt.option('cf-target') || 'us-bluemix-demo')],
-    // hostname
-    //hostname: '<%= cf_env.prefix ? cf_env.prefix + "-" : "" %><%= manifest.applications[0].host %><%= cf_env.suffix ? "-" + cf_env.suffix : "" %>',
-    //domain: '<%= cf_env.domain || manifest.applications[0].domain %>',
     // Source header
     banner: '/*! <%= pkg.title || pkg.name %> - v<%= pkg.version %> - ' +
       '<%= grunt.template.today("yyyy-mm-dd") %>\n' +
