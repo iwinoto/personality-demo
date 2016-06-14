@@ -1,10 +1,10 @@
 applications:
-- path: .
+- name: PersonalityInsights
+  path: .
   memory: 512M
   instances: 1
   domain: au-syd.mybluemix.net
-  name: iw-personality-demo
-  host: iw-personality-demo
+  host: personalityinsights
   disk_quota: 512M
   services:
   - iw-personality-demo-personality_insights

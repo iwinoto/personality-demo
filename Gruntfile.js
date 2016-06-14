@@ -8,10 +8,12 @@ module.exports = function(grunt) {
     dist: 'target',
     // Application package:
     pkg: grunt.file.readJSON(grunt.template.process('package.json')),
+    manifest: grunt.file.readYAML('manifest.yml'),
     // Cloud Foundry target
     cf_env: (grunt.file.readJSON('cf-targets.json'))[(grunt.option('cf-target') || 'us-bluemix-demo')],
     // hostname
-    hostname: '<%= cf_env.prefix %>-<%= pkg.name %>-<%= cf_env.suffix %>',
+    //hostname: '<%= cf_env.prefix ? cf_env.prefix + "-" : "" %><%= manifest.applications[0].host %><%= cf_env.suffix ? "-" + cf_env.suffix : "" %>',
+    //domain: '<%= cf_env.domain || manifest.applications[0].domain %>',
     // Source header
     banner: '/*! <%= pkg.title || pkg.name %> - v<%= pkg.version %> - ' +
       '<%= grunt.template.today("yyyy-mm-dd") %>\n' +
@@ -30,7 +32,7 @@ module.exports = function(grunt) {
       dev : {
         LOCATIONS_UNIT_TESTING : 'false',
         TEST_REMOTE : 'true',
-        TEST_ROUTE : '<%= hostname %>.<%= cf_env.domain %>',
+        TEST_ROUTE : '',
         TEST_PORT : '80'
       }
     },
@@ -156,9 +158,10 @@ module.exports = function(grunt) {
           var target = grunt.config('cf_env.target');
           var org = grunt.config('cf_env.organisation');
           var space = grunt.config('cf_env.space');
-          var cmd = ['cf api ' + target,
-                'cf auth ' + process.env.CF_USER + ' ' + process.env.CF_PASSWD,
-                'cf target -o ' + org + ' -s ' + space];
+          var cmd = [
+                'cf login -a ' + target + ' -u ' + process.env.CF_USER + ' -p ' + process.env.CF_PASSWD +
+                  ' -o ' + org + ' -s ' + space
+                ];
           grunt.log.writeln('Login to Bluemix with\n' +
               '\t target: ' + target + '\n' +
               '\t organisation: ' + org + '\n' +
@@ -173,7 +176,7 @@ module.exports = function(grunt) {
           var hostname = grunt.config.get('hostname');
           var dist_dir = grunt.config('dist');
           var app_name = grunt.config('pkg.name');
-          var domain = grunt.config('cf_env.domain');
+          var domain = grunt.config.get('domain');
           var cmd = ['cd ' + dist_dir,
                 'cf push ' + app_name + ' -n ' + hostname + ' -d ' + domain];
           grunt.log.writeln('Push to Bluemix with\n' +
@@ -204,23 +207,26 @@ module.exports = function(grunt) {
     }
   });
 
-  //Set route in grunt.env.dev.TEST_ROUTE
-  var hostname = grunt.config.get('hostname');
-  var route = hostname + '.mybluemix.net';
-  grunt.log.writeln('hostname = ' + hostname);
-  grunt.log.writeln('default route = ' + route);
-  grunt.log.writeln('env.dev.TEST_ROUTE = ', grunt.config('env.dev.TEST_ROUTE'));
-  var manifest = grunt.file.readYAML('manifest.yml');
+  //Set hotname, domain and env.dev.TEST_ROUTE in grunt config
+  var hostname;
+  var route;
+  var domain;
+  var manifest = grunt.config.get('manifest');
   var pkg = grunt.config.get('pkg');
+  var cf_env = grunt.config.get('cf_env');
   grunt.log.writeln('Getting route for ' + hostname);
   manifest.applications.forEach(function(app){
     if(app.name === pkg.name){
       grunt.log.writeln('Found app ' + app.name + ' in manifest.');
-      route = hostname + '.' + app.domain;
+      hostname = (cf_env.prefix ? cf_env.prefix + "-" : "") + app.host + (cf_env.suffix ? "-" + cf_env.suffix : "");
+      domain = (cf_env.domain ? cf_env.domain : app.domain);
+      route = hostname + '.' + domain;
       grunt.log.writeln('Setting route to ' + route);
     }
   });
   grunt.log.writeln('Route is ' + route);
+  grunt.config('hostname', hostname);
+  grunt.config('domain', domain);
   grunt.config('env.dev.TEST_ROUTE', route);
 
   // These plugins provide necessary tasks.
@@ -238,14 +244,23 @@ module.exports = function(grunt) {
   grunt.registerTask('deploy',
       'Deploy the application to a CF target.\n' +
       'Set up targets in cf-targets.json and services in cf-services.json.\n' +
-      'Pass in a target key using the --cf-target=<target key> option. Defaults to "public-dev".\n' +
+      'Pass in a target key using the --cf-target=<target key> option. Defaults to "us-bluemix-demo".\n' +
       'Set CF userID and password in environment variables CF_USER and CF_PASSWD.',
       ['env:dev', 'shell:login', 'shell:create_services', 'shell:push', 'nodeunit']);
   grunt.registerTask('create_services',
-      'Deploy the application to a CF target from IBM DevOps Services (IDS).\n' +
-      'Target information, including credentials, is configured in IDS pipeline configuration UI.\n' +
+      'Alias for shell:create_services\n' +
+      'Assumes client is already logged in to target and org and space are set.\n' +
       'All we do is create services from information in cf-services.json.\n',
-      ['env:dev', 'shell:login', 'shell:create_services']);
+      ['shell:create_services']);
+  grunt.registerTask('push',
+      'Alias for shell:psuh\n' +
+      'Assumes client is already logged in to target and org and space are set.\n' +
+      'All we do is push the app. Default name and domain are from manifest.yml, '+
+      'but can be overidden from cf-target.json.\n' +
+      'Set up host name and domain in cf-targets.json.\n' +
+      'Pass in a target key using the --cf-target=<target key> option. Defaults to "us-bluemix-demo\n' +
+      'Application names in package.json and manifest.yml must match.',
+      ['shell:push']);
   grunt.registerTask('full', ['clean','jshint', 'env:unit_test', 'nodeunit', 'qunit', 'concat', 'uglify', 'copy:main']);
   grunt.registerTask('default', ['clean', 'jshint', 'env:unit_test', 'nodeunit', 'concat', 'uglify', 'copy:main']);
   grunt.registerTask('debug', ['clean', 'jshint', 'nodeunit', 'concat', 'copy:debug']);
