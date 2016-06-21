@@ -7,4 +7,4 @@ applications:
   host: personalityinsights
   disk_quota: 512M
   services:
-  - iw-personality-demo-personality_insights
+  - PersonalityInsights-personality_insights
