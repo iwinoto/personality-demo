@@ -2,7 +2,7 @@ applications:
 - name: PersonalityInsights
   path: .
   memory: 512M
-  instances: 1
+  instances: 3
   domain: au-syd.mybluemix.net
   host: personalityinsights
   disk_quota: 512M
