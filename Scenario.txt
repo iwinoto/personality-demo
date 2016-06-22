@@ -10,8 +10,9 @@ Demo application build with node.js and Personality Insight using boilerplate
   * Manually create 2 instances
   * kill an instance
   * add auto scale service 
-    - Upper threshold: 80%
-    - Lower threshold: 75%
+    - min instances 2
+    - Upper threshold: 73%
+    - Lower threshold: 70%
     - all timers and windows to minimum (30 sec in US)
   * test with
-    $ ab -n 10000 -c 15 -s 60 -r http://iw-personality-demo.mybluemix.net/
+    $ ab -n 10000 -c 15 -s 60 -r http://iw-personalityinsights-demo.mybluemix.net/
