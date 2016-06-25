@@ -2,6 +2,7 @@ BMX Dedicated IBM staging admin console walk through
   * DevOps concerned about maverick service instantiation, show catalogue management and organisation utilisation.
 Demo application build with node.js and Personality Insight using boilerplate
   * get code from boiler plate - Node.js->Watson Personality Insights
+  * add auto scale service 
   * create github repo and deploy pipeline (new toolchain?)
   * create a new instance
   * add kill me button
@@ -9,9 +10,9 @@ Demo application build with node.js and Personality Insight using boilerplate
   * commit code and show pipeline - talk about other tools, eg Jenkins
   * Manually create 2 instances
   * kill an instance
-  * add auto scale service 
+  * Config auto scale service 
     - min instances 2
-    - Upper threshold: 73%
+    - Upper threshold: 75% (80% ?)
     - Lower threshold: 70%
     - all timers and windows to minimum (30 sec in US)
   * test with
