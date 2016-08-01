@@ -14,5 +14,13 @@
     "space": "bluemix-demo",
     "organisation": "iwinoto@au1.ibm.com",
     "domain": "au-syd.mybluemix.net"
+  },
+  "w3ibm-bluemix-dev": {
+    "prefix": "iw",
+    "suffix": "dev",
+    "target": "api.w3ibm.bluemix.net",
+    "space": "dev",
+    "organisation": "iwinoto",
+    "domain": "w3ibm.mybluemix.net"
   }
 }
