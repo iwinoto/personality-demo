@@ -3,4 +3,5 @@ launchConfigurations/
 /npm-debug.log
 /target/
 /build/
-/.Scenario.md.html
+/.*.md.html
+/.*.md.html
