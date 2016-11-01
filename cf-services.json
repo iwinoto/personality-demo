@@ -2,5 +2,9 @@
   "PersonalityInsights-personality_insights": {
     "type": "personality_insights",
     "plan": "tiered"
+  },
+  "Auto-Scaling-tu": {
+    "type": "Auto-Scaling-dedicated",
+    "plan": "free"
   }
 }

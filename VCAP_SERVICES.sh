@@ -3,9 +3,9 @@ export VCAP_SERVICES='{
   "personality_insights": [
    {
     "credentials": {
-     "password": "hoZWX7EHEY4h",
-     "url": "https://gateway.watsonplatform.net/personality-insights/api",
-     "username": "956715b9-b14c-4f8d-b977-f4c72949cede"
+        "url": "https://gateway.watsonplatform.net/personality-insights/api",
+        "password": "etxihk3iGNCf",
+        "username": "b4b4609e-27a7-4fbb-be17-e104d27491d6"
     },
     "label": "personality_insights",
     "name": "iw-personality-demo-personality_insights",
